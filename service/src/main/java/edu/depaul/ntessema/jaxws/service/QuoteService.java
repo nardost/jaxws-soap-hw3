@@ -1,6 +1,8 @@
 package edu.depaul.ntessema.jaxws.service;
 
 import javax.jws.WebService;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -20,31 +22,30 @@ public class QuoteService implements Service {
 
     @Override
     public String serviceMethod() {
-        final int selected = selectQuote();
-        final String selectedQuote = QUOTES[selected];
-        seenQuotes.put(selected, true);
-        updateSeenQuotes(selected);
-        return selectedQuote;
+        return nextQuote();
     }
 
-    private int selectQuote() {
-        int randomInt;
+    private String nextQuote() {
+        int selectedIndex;
         if(numberOfQuotesSeen == QUOTES.length) {
             clearQuotesSeen();
         }
         do {
-            randomInt = ThreadLocalRandom.current().nextInt(0, QUOTES.length);
-        } while(seenQuotes.get(randomInt));
-        return randomInt;
+            selectedIndex = ThreadLocalRandom.current().nextInt(0, QUOTES.length);
+        } while(seenQuotes.get(selectedIndex));
+        seenQuotes.put(selectedIndex, true);
+        final String selectedQuote = QUOTES[selectedIndex];
+        updateSeenQuotes(selectedIndex);
+        log(selectedQuote);
+        if(numberOfQuotesSeen == QUOTES.length) {
+            log("------- all quotes served -------", true);
+        }
+        return selectedQuote;
     }
 
     private void updateSeenQuotes(final int seen) {
         numberOfQuotesSeen++;
         seenQuotes.put(seen, true);
-        System.out.println("Serving quote: " + QUOTES[seen]);
-        if(numberOfQuotesSeen == QUOTES.length) {
-            System.out.println("All quotes seen.");
-        }
     }
 
     private void clearQuotesSeen() {
@@ -52,6 +53,16 @@ public class QuoteService implements Service {
             q.setValue(false);
         }
         numberOfQuotesSeen = 0;
+    }
+
+    private void log(String message, boolean... noTimestamp) {
+        String prefix = "";
+        if(noTimestamp.length == 0 || !noTimestamp[0]) {
+            Instant instant = Instant.now();
+            Timestamp timestamp = Timestamp.from(instant);
+            prefix = timestamp.toString().replaceAll("\\.\\d{1,3}", "");
+        }
+        System.out.println(String.format("%s %s", prefix, message));
     }
 
     private final static String QUOTES[] = new String[]{
