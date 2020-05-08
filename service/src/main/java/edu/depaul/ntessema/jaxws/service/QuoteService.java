@@ -3,6 +3,7 @@ package edu.depaul.ntessema.jaxws.service;
 import javax.jws.WebService;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -38,7 +39,7 @@ public class QuoteService implements Service {
         updateSeenQuotes(selectedIndex);
         log(selectedQuote);
         if(numberOfQuotesSeen == QUOTES.length) {
-            log("------- all quotes served -------", true);
+            log("------- [all quotes served] -------", "noTimestamp");
         }
         return selectedQuote;
     }
@@ -55,14 +56,14 @@ public class QuoteService implements Service {
         numberOfQuotesSeen = 0;
     }
 
-    private void log(String message, boolean... noTimestamp) {
+    private void log(String message, String... options) {
         String prefix = "";
-        if(noTimestamp.length == 0 || !noTimestamp[0]) {
+        if(options.length == 0 || Arrays.asList(options).indexOf("noTimestamp") < 0) {
             Instant instant = Instant.now();
             Timestamp timestamp = Timestamp.from(instant);
             prefix = timestamp.toString().replaceAll("\\.\\d{1,3}", "");
         }
-        System.out.println(String.format("%s %s", prefix, message));
+        System.out.println(String.format("%s [%s]", prefix, message));
     }
 
     private final static String QUOTES[] = new String[]{
