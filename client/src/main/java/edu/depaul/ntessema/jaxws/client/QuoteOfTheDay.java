@@ -1,7 +1,6 @@
 package edu.depaul.ntessema.jaxws.client;
 
-import edu.depaul.ntessema.jaxws.client.generated.QuoteServiceService;
-import edu.depaul.ntessema.jaxws.client.generated.Service;
+import edu.depaul.ntessema.jaxws.client.generated.*;
 
 public class QuoteOfTheDay {
 
