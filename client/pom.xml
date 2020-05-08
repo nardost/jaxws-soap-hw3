@@ -2,17 +2,40 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <artifactId>jax-ws-demo</artifactId>
         <groupId>edu.depaul.ntessema.jaxws</groupId>
+        <artifactId>hw3</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>client</artifactId>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>2.6</version>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <wsdlDirectory>${basedir}/src/main/resources</wsdlDirectory>
+                    <wsdlFiles>
+                        <wsdlFile>quote-service.wsdl</wsdlFile>
+                    </wsdlFiles>
+                    <packageName>edu.depaul.ntessema.jaxws.client</packageName>
+                    <keep>true</keep>
+                    <sourceDestDir>${basedir}/target/generated-sources/jaxws</sourceDestDir>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.1</version>

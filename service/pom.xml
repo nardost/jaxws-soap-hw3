@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>edu.depaul.ntessema.jaxws</groupId>
-        <artifactId>jax-ws-demo</artifactId>
+        <artifactId>hw3</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
