@@ -57,7 +57,7 @@ public class QuoteOfTheDay {
                         display("no quote provided for addition", Status.ERROR);
                     } else {
                         port.addQuote(argument);
-                        display("quote successfully added", Status.ADD_OK);
+                        display("quote sent for addition", Status.ADD_OK);
                     }
                     continue;
                 }

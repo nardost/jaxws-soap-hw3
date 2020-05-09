@@ -29,9 +29,14 @@ public class QuoteService implements Service {
 
     @Override
     public void addQuote(String quote) {
-        quotes.add(quote);
-        served.put(quotes.size() - 1, false);
-        log(quote, Event.ADD);
+        if(!QUOTES.containsKey(quote.toLowerCase().hashCode())) {
+            quotes.add(quote);
+            QUOTES.put(quote.toLowerCase().hashCode(), quote);
+            served.put(quotes.size() - 1, false);
+            log(quote, Event.ADD);
+        } else {
+            log(quote, Event.REJECTED);
+        }
     }
 
     private String nextQuote() {
@@ -87,4 +92,6 @@ public class QuoteService implements Service {
             "You can’t cross the sea merely by standing and staring at the water.",
             "Man is the only creature who refuses to be what he is."
     }).collect(Collectors.toList());
+
+    private static Map<Integer, String> QUOTES = quotes.stream().collect(Collectors.toMap(q -> q.toLowerCase().hashCode(), q -> q));
 }
