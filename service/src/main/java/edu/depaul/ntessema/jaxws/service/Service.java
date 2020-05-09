@@ -7,5 +7,8 @@ import javax.jws.WebService;
 public interface Service {
 
     @WebMethod
-    String serviceMethod();
+    public String getQuote();
+
+    @WebMethod
+    public void addQuote(String quote);
 }

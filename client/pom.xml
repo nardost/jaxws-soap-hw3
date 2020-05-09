@@ -29,7 +29,7 @@
                 <configuration>
                     <wsdlDirectory>${basedir}/src/main/resources</wsdlDirectory>
                     <wsdlFiles>
-                        <wsdlFile>quote-service.wsdl</wsdlFile>
+                        <wsdlFile>quotes.wsdl</wsdlFile>
                     </wsdlFiles>
                     <packageName>edu.depaul.ntessema.jaxws.client</packageName>
                     <keep>true</keep>
