@@ -22,20 +22,28 @@ public class QuoteService implements Service {
 
     @Override
     public String getQuote() {
-        return nextQuote();
+        String selectedQuote = nextQuote();
+        log(selectedQuote, Event.GET);
+        return selectedQuote;
     }
 
     @Override
     public void addQuote(String quote) {
-        quotes.add(quote);
-        served.put(quotes.size() - 1, false);
-        log(quote, Event.ADD);
+        final String cleanQuote = cleanQuote(quote);
+        System.out.println(cleanQuote);
+        if(!quotes.contains(cleanQuote)) {
+            quotes.add(cleanQuote);
+            served.put(quotes.size() - 1, false);
+            log(cleanQuote, Event.ADD);
+        } else {
+            log(cleanQuote, Event.REJECTED);
+        }
     }
 
     private String nextQuote() {
         int selectedIndex;
         if(allQuotesServed()) {
-            clearQuotesSeen();
+            setAllQuotesNotServed();
         }
         do {
             selectedIndex = ThreadLocalRandom.current().nextInt(0, quotes.size());
@@ -43,7 +51,6 @@ public class QuoteService implements Service {
         served.put(selectedIndex, true);
         final String selectedQuote = quotes.get(selectedIndex);
         updateSeenQuotes(selectedIndex);
-        log(selectedQuote, Event.GET);
         return selectedQuote;
     }
 
@@ -60,10 +67,22 @@ public class QuoteService implements Service {
         return true;
     }
 
-    private void clearQuotesSeen() {
+    private void setAllQuotesNotServed() {
         for(Map.Entry<Integer, Boolean> q : served.entrySet()) {
             q.setValue(false);
         }
+    }
+
+    /*
+     * Remove excess white spaces.
+     * This makes it easier to identify a quote
+     * that already exists
+     */
+    private String cleanQuote(String quote) {
+        return quote
+                .trim()
+                .replaceAll("\\s+", " ")
+                .replaceAll("(\\s+)(\\p{Punct})", "$2");
     }
 
     private void log(String message, final Event event, String... options) {
@@ -73,6 +92,10 @@ public class QuoteService implements Service {
             timestamp = Timestamp.from(instant).toString().replaceAll("\\.\\d{1,3}", "");
         }
         System.out.println(String.format("%19s %3s %s", timestamp, event, message));
+    }
+
+    private void displayLogo() {
+
     }
 
     /*

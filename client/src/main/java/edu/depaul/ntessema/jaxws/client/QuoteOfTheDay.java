@@ -8,15 +8,15 @@ import java.util.stream.Stream;
 public class QuoteOfTheDay {
 
     private static final String[][] COMMANDS = new String[][] {
-            { "get", "Get a quote from the quote service." },
-            { "add", "Add a quote to the quote service." },
-            { "exit", "Exit the client program." },
-            { "?", "Print available commands." }
+            { "get", "Get a quote from the quote service" },
+            { "add", "Add a quote to the quote service" },
+            { "exit", "Exit the client program" },
+            { "help", "Print available commands" }
     };
-
     public static void main(String[] args) {
         QuoteServiceService service = new QuoteServiceService();
         Service port = service.getQuoteServicePort();
+        displayLogo();
         commandLoop(port);
     }
 
@@ -33,33 +33,26 @@ public class QuoteOfTheDay {
                 if(tokens.length > 1) {
                     argument = tokens[1];
                 }
-                if(command.equals("?")) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(String.format("%3s%s", "", "available commands"));
-                    sb.append("\n");
-                    sb.append(String.format("%3s%s", "", "-------------------------------------------"));
-                    sb.append("\n");
-                    Stream.of(COMMANDS).forEach(c -> sb.append(String.format("%7s - %s\n", c[0], c[1])));
-                    sb.append(String.format("%3s%s", "", "-------------------------------------------"));
-                    display(sb.toString(), Status.INFO);
-                    continue;
-                }
-                if(command.equals("exit")) {
-                    clientAlive = false;
-                    continue;
-                }
-                if(command.equals("get")) {
-                    display(port.getQuote(), Status.GET_OK);
-                    continue;
-                }
-                if(command.equals("add")) {
-                    if(argument.equals("")) {
-                        display("no quote provided for addition", Status.ERROR);
-                    } else {
-                        port.addQuote(argument);
-                        display("quote sent for addition", Status.ADD_OK);
-                    }
-                    continue;
+                switch(command) {
+                    case "help":
+                        displayHelp();
+                        continue;
+                    case "exit":
+                        clientAlive = false;
+                        continue;
+                    case "get":
+                        display(port.getQuote(), Status.GET_OK);
+                        continue;
+                    case "add":
+                        if(argument.equals("")) {
+                            display("no quote provided for addition", Status.ERROR);
+                        } else {
+                            port.addQuote(argument);
+                            display("quote sent for addition", Status.ADD_OK);
+                        }
+                        continue;
+                    default:
+                        continue;
                 }
             } catch(IOException ioe) {
                 System.out.println("I/O error.");
@@ -71,5 +64,32 @@ public class QuoteOfTheDay {
         String statusMessage = ((status == Status.ERROR) ? ("[" + status.toString() + "]") : "");
         String formattedMessage = ((status == Status.GET_OK)) ? ("\"" + message + "\"") : message;
         System.out.println(String.format("%s %s", statusMessage, formattedMessage));
+    }
+
+    private static void displayLogo() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%8s%s", "", "+-------------------------------------------+"));
+        sb.append("\n");
+        sb.append(String.format("%8s%s", "", "|            JAX-WS SOAP Client             |"));
+        sb.append("\n");
+        sb.append(String.format("%8s%s", "", "|              Nardos Tessema               |"));
+        sb.append("\n");
+        sb.append(String.format("%8s%s", "", "|     commands: get, add, exit, help        |"));
+        sb.append("\n");
+        sb.append(String.format("%8s%s", "", "+-------------------------------------------+"));
+        System.out.println(sb.toString());
+    }
+
+    private static void displayHelp() {
+        final String SEPARATOR = "  ";
+        final String FORMAT = "%s%7s%s%s\n";
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append(String.format(FORMAT, SEPARATOR, "-------", SEPARATOR, "-----------------------------------"));
+        sb.append(String.format(FORMAT, SEPARATOR, "command", SEPARATOR, "description"));
+        sb.append(String.format(FORMAT, SEPARATOR, "-------", SEPARATOR, "-----------------------------------"));
+        Stream.of(COMMANDS).forEach(c -> sb.append(String.format(FORMAT, SEPARATOR, c[0], SEPARATOR, c[1])));
+        sb.append(String.format(FORMAT, SEPARATOR, "-------", SEPARATOR, "-----------------------------------"));
+        display(sb.toString(), Status.INFO);
     }
 }
