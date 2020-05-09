@@ -14,8 +14,6 @@ import java.util.stream.Stream;
 @WebService(endpointInterface = "edu.depaul.ntessema.jaxws.service.Service")
 public class QuoteService implements Service {
 
-    private Map<Integer, Boolean> served = new HashMap<>();
-
     public QuoteService() {
         for(int i = 0; i < quotes.size(); i++) {
             served.put(i, false);
@@ -29,14 +27,9 @@ public class QuoteService implements Service {
 
     @Override
     public void addQuote(String quote) {
-        if(!QUOTES.containsKey(quote.toLowerCase().hashCode())) {
-            quotes.add(quote);
-            QUOTES.put(quote.toLowerCase().hashCode(), quote);
-            served.put(quotes.size() - 1, false);
-            log(quote, Event.ADD);
-        } else {
-            log(quote, Event.REJECTED);
-        }
+        quotes.add(quote);
+        served.put(quotes.size() - 1, false);
+        log(quote, Event.ADD);
     }
 
     private String nextQuote() {
@@ -83,7 +76,7 @@ public class QuoteService implements Service {
     }
 
     /*
-     * The Quotes Silo
+     * The quotes silo
      */
     private static List<String> quotes = Stream.of(new String[] {
             "There are so many dawns that have not yet broken.",
@@ -93,5 +86,5 @@ public class QuoteService implements Service {
             "Man is the only creature who refuses to be what he is."
     }).collect(Collectors.toList());
 
-    private static Map<Integer, String> QUOTES = quotes.stream().collect(Collectors.toMap(q -> q.toLowerCase().hashCode(), q -> q));
+    private Map<Integer, Boolean> served = new HashMap<>();
 }
