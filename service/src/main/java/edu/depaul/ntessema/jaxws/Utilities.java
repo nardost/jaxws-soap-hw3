@@ -6,8 +6,8 @@ import java.time.Instant;
 /**
  * @author nardos
  *
- * Utility methods that have been littering the
- * service implementation class and were factored out.
+ * Utility methods that were littering the service
+ * implementation class and were factored out.
  */
 public class Utilities {
     /*
@@ -38,7 +38,7 @@ public class Utilities {
     public static void log(final String message, final Event event) {
         Instant instant = Instant.now();
         /*
-         * remove milliseconds from timestamps.
+         * Remove milliseconds from timestamps.
          */
         String timestamp = Timestamp.from(instant).toString().replaceAll("\\.\\d{1,3}", "");
         System.out.println(String.format("%19s %3s %s", timestamp, event, message));

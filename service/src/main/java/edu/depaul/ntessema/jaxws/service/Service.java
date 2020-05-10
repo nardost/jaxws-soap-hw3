@@ -6,7 +6,11 @@ import javax.jws.WebService;
 /**
  * @author nardos
  *
- * The interface that defines the public methods of the service.
+ * The service endpoint interface that defines the public
+ * methods of the service must be annotated with @WebService.
+ *
+ * The business methods that are exposed to the
+ * client must be annotated with @WebMethod.
  */
 @WebService
 public interface Service {

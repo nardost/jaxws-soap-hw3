@@ -65,7 +65,7 @@ public class QuoteOfTheDay {
                  */
                 String argument = "";
                 /*
-                 * If user supplied an argument, store
+                 * If user supplies an argument, store
                  * it in a variable called argument.
                  */
                 if(tokens.length > 1) {
@@ -94,8 +94,7 @@ public class QuoteOfTheDay {
                             display("quote sent for addition", Status.ADD_OK);
                         }
                         continue;
-                    default:
-                        continue;
+                    default: /* Ignore unknown commands. */
                 }
             } catch(IOException ioe) {
                 /*
@@ -106,9 +105,14 @@ public class QuoteOfTheDay {
                 /*
                  * If service is not running, a client request will throw
                  * an exception. Do not let the client break if such exception
-                 * occurs. Just inform the user and continue the REPL.
+                 * occurs. Just inform the user and continue the command loop.
+                 *
+                 * Since I do not know the exact exception type, I make sure
+                 * that it is handled in the last catch block. If any catch block is
+                 * written next to this block, it will be wrongly captured here
+                 * as Exception is the parent of all exception classes.
                  */
-                display("Unable to connect to service", Status.ERROR);
+                display("unable to connect to service", Status.ERROR);
             }
         }
     }

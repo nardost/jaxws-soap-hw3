@@ -8,9 +8,15 @@ import javax.jws.WebService;
 /**
  * @author nardos
  *
- * The service endpoint implementation class.
+ * The service endpoint implementation (SEI) class.
+ *
+ * Annotated with @WebService to define it as a web service endpoint.
+ *
  * There is an explicit service endpoint interface, and it is specified
- * by the endpointInterface property of the @WebService annotation.
+ * by the endpointInterface element of the @WebService annotation.
+ * If the SEI (interface) is not referenced with this annotation,
+ * an implicit SEI will be defined. Since I have defined one
+ * explicitly, I reference it explicitly next.
  */
 @WebService(endpointInterface = "edu.depaul.ntessema.jaxws.service.Service")
 public class QuoteService implements Service {
@@ -27,7 +33,9 @@ public class QuoteService implements Service {
     }
 
     /*
-     * Implement the
+     * Implement the getQuote method.
+     * Get a quote from the Quotes abstraction
+     * and log the event.
      */
     @Override
     public String getQuote() {
@@ -36,6 +44,11 @@ public class QuoteService implements Service {
         return selectedQuote;
     }
 
+    /*
+     * Implementation of the addQuote method.
+     * Incoming quotes will be cleaned and duplicates will be checked.
+     * If a quote already exists, it will be rejected.
+     */
     @Override
     public void addQuote(String q) {
         /*
@@ -54,7 +67,7 @@ public class QuoteService implements Service {
             Quotes.addQuote(quote);
             Utilities.log(quote, Event.ADD);
         } else {
-            Utilities.log("(duplicate) " + quote, Event.REJECTED);
+            Utilities.log("(duplicate) " + quote, Event.REJECT);
         }
     }
 }
