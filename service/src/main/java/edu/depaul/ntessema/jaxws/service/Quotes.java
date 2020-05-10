@@ -13,11 +13,11 @@ class Quotes {
      * The quotes silo
      */
     private final static List<String> quotes = Stream.of(new String[] {
-            "There are so many dawns that have not yet broken.",
+            "Conscience does make cowards of us all.",
             "What does not destroy me makes me stronger.",
             "Everything has been figured out, except how to live.",
-            "You can’t cross the sea merely by standing and staring at the water.",
-            "Man is the only creature who refuses to be what he is."
+            "There is no fate that cannot be surmounted by scorn.",
+            "There are so many dawns that have not yet broken."
     }).collect(Collectors.toList());
 
     private final static Map<Integer, Boolean> served = new HashMap<>();
