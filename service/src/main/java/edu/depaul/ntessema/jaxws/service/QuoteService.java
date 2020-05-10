@@ -1,113 +1,32 @@
 package edu.depaul.ntessema.jaxws.service;
 
+import edu.depaul.ntessema.jaxws.Event;
+import edu.depaul.ntessema.jaxws.Utilities;
+
 import javax.jws.WebService;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @WebService(endpointInterface = "edu.depaul.ntessema.jaxws.service.Service")
 public class QuoteService implements Service {
 
     public QuoteService() {
-        for(int i = 0; i < quotes.size(); i++) {
-            served.put(i, false);
-        }
+        Quotes.initialize();
     }
 
     @Override
     public String getQuote() {
-        String selectedQuote = nextQuote();
-        log(selectedQuote, Event.GET);
+        String selectedQuote = Quotes.getNextQuote();
+        Utilities.log(selectedQuote, Event.GET);
         return selectedQuote;
     }
 
     @Override
-    public void addQuote(String quote) {
-        final String cleanQuote = cleanQuote(quote);
-        System.out.println(cleanQuote);
-        if(!quotes.contains(cleanQuote)) {
-            quotes.add(cleanQuote);
-            served.put(quotes.size() - 1, false);
-            log(cleanQuote, Event.ADD);
+    public void addQuote(String q) {
+        String quote = Utilities.cleanQuote(q);
+        if(!Quotes.quoteExists(quote)) {
+            Quotes.add(quote);
+            Utilities.log(quote, Event.ADD);
         } else {
-            log(cleanQuote, Event.REJECTED);
+            Utilities.log("(duplicate) " + quote, Event.REJECTED);
         }
     }
-
-    private String nextQuote() {
-        int selectedIndex;
-        if(allQuotesServed()) {
-            setAllQuotesNotServed();
-        }
-        do {
-            selectedIndex = ThreadLocalRandom.current().nextInt(0, quotes.size());
-        } while(served.get(selectedIndex));
-        served.put(selectedIndex, true);
-        final String selectedQuote = quotes.get(selectedIndex);
-        updateSeenQuotes(selectedIndex);
-        return selectedQuote;
-    }
-
-    private void updateSeenQuotes(final int seen) {
-        served.put(seen, true);
-    }
-
-    private boolean allQuotesServed() {
-        for(Map.Entry<Integer, Boolean> q : served.entrySet()) {
-            if(!q.getValue()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void setAllQuotesNotServed() {
-        for(Map.Entry<Integer, Boolean> q : served.entrySet()) {
-            q.setValue(false);
-        }
-    }
-
-    /*
-     * Remove excess white spaces.
-     * This makes it easier to identify a quote
-     * that already exists
-     */
-    private String cleanQuote(String quote) {
-        return quote
-                .trim()
-                .replaceAll("\\s+", " ")
-                .replaceAll("(\\s+)(\\p{Punct})", "$2");
-    }
-
-    private void log(String message, final Event event, String... options) {
-        String timestamp = "";
-        if(options.length == 0 || Arrays.asList(options).indexOf("noTimestamp") < 0) {
-            Instant instant = Instant.now();
-            timestamp = Timestamp.from(instant).toString().replaceAll("\\.\\d{1,3}", "");
-        }
-        System.out.println(String.format("%19s %3s %s", timestamp, event, message));
-    }
-
-    private void displayLogo() {
-
-    }
-
-    /*
-     * The quotes silo
-     */
-    private static List<String> quotes = Stream.of(new String[] {
-            "There are so many dawns that have not yet broken.",
-            "What does not destroy me makes me stronger.",
-            "Everything has been figured out, except how to live.",
-            "You can’t cross the sea merely by standing and staring at the water.",
-            "Man is the only creature who refuses to be what he is."
-    }).collect(Collectors.toList());
-
-    private Map<Integer, Boolean> served = new HashMap<>();
 }

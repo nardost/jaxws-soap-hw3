@@ -7,12 +7,6 @@ import java.util.stream.Stream;
 
 public class QuoteOfTheDay {
 
-    private static final String[][] COMMANDS = new String[][] {
-            { "get", "Get a quote from the quote service" },
-            { "add", "Add a quote to the quote service" },
-            { "exit", "Exit the client program" },
-            { "help", "Print available commands" }
-    };
     public static void main(String[] args) {
         QuoteServiceService service = new QuoteServiceService();
         Service port = service.getQuoteServicePort();
@@ -68,15 +62,13 @@ public class QuoteOfTheDay {
 
     private static void displayLogo() {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%8s%s", "", "+-------------------------------------------+"));
-        sb.append("\n");
-        sb.append(String.format("%8s%s", "", "|            JAX-WS SOAP Client             |"));
-        sb.append("\n");
-        sb.append(String.format("%8s%s", "", "|              Nardos Tessema               |"));
-        sb.append("\n");
-        sb.append(String.format("%8s%s", "", "|     commands: get, add, exit, help        |"));
-        sb.append("\n");
-        sb.append(String.format("%8s%s", "", "+-------------------------------------------+"));
+        final String FORMAT = "%8s%s\n";
+        sb.append(String.format(FORMAT, "", "+-------------------------------------------+"));
+        sb.append(String.format(FORMAT, "", "|         Quote of the Day Client           |"));
+        sb.append(String.format(FORMAT, "", "|              Nardos Tessema               |"));
+        sb.append(String.format(FORMAT, "", "+-------------------------------------------+"));
+        sb.append(String.format(FORMAT, "", "|    (Commands: get, add, exit, help)       |"));
+        sb.append(String.format(FORMAT, "", "+-------------------------------------------+"));
         System.out.println(sb.toString());
     }
 
@@ -92,4 +84,10 @@ public class QuoteOfTheDay {
         sb.append(String.format(FORMAT, SEPARATOR, "-------", SEPARATOR, "-----------------------------------"));
         display(sb.toString(), Status.INFO);
     }
+    private static final String[][] COMMANDS = new String[][] {
+            { "get", "Get a quote from the quote service" },
+            { "add", "Add a quote to the quote service" },
+            { "exit", "Exit the client program" },
+            { "help", "Print available commands" }
+    };
 }
